@@ -11,3 +11,4 @@ def ingest(file):
     pass
 
 if __name__ == '__main__':
+    # ingest files
