@@ -7,6 +7,7 @@ import datetime
 from peewee import *
 
 from models.Contribution import Contribution
+from models.File import File
 
 db = SqliteDatabase('contributions.db')
 
@@ -67,11 +68,16 @@ def ingested(infile):
 def ingest(filepath):
     '''Ingest file into sqlite database'''
     rows = parse_fec_file(filepath)
+    myfile = File.get_or_create(name=filepath)
+    myfile_id = myfile.id
     # Fastest.
     with db.transaction():
         for idx in range(0, len(rows), 500):
             print "Inserting row %d of %s" % (idx, filepath)
-            Contribution.insert_many(rows[idx:idx+500]).execute()
+            rows_subset = rows[idx:idx+500]
+            for row in rows_subset:
+                row['file'] = myfile_id
+            Contribution.insert_many(rows_subset).execute()
 
     # with db.transaction():
     #     Contribution.insert_many(rows).execute()

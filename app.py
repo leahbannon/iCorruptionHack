@@ -1,5 +1,6 @@
 from flask import Flask
 from models.Contribution import Contribution
+from models.File import File
 import os
 from peewee import *
 from ingester import ingest
@@ -14,7 +15,8 @@ def create_db():
   db = SqliteDatabase('./contributions.db')
   print("Created database 'contributions.db'")
   Contribution.create_table()
-  print "Created contribution table"
+  File.create_table()
+  print "Created tables"
 
   return db
 
