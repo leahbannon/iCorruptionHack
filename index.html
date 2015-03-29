@@ -40,6 +40,7 @@
 
       <!-- build:js scripts/main.js -->
       <script src="bower_components/jquery/jquery.js"></script>
+      <script src="bower_components/dynatable/jquery.dynatable.js"></script>
       <script src="scripts/main.js"></script>
       <script src="scripts/hello.js"></script>
       <!-- endbuild -->
@@ -60,11 +61,52 @@
       <!-- endbuild -->
 
       <script>
+
+        // var columns = ['comittee_id', 'ammendment_id', 'report_type', 'transaction_pgi', 'image_num', 'transaction_tp', 'entity_tp', 'name', 'new', 'city']
+
         $.getJSON("diff.json", function(data) {
           for (i in data) {
-            var item = "<li>" + JSON.stringify(data[i]) + "</li>"
-            $("#thing").append(item);
-            console.log(data[i]);
+
+            var columns = [];
+            var newvalues = [];
+            var oldvalues = [];
+
+            for (j in data[0]) {
+              var obj = data[i][j];
+              var key = Object.keys(obj)[0];
+              columns.push(key);
+              newvalues.push(obj[key].new);
+              oldvalues.push(obj[key].new);
+            }
+
+            var header = "<thead><tr>";
+            for (i in columns) {
+              header += "<th>"+ columns[i] + "</th>";
+            }
+            header += "</tr></thead>";
+
+            var rowold = "<tr>";
+            var rownew = "<tr>";
+            for (i in oldvalues) {
+              rowold += "<td>" + oldvalues[i] + "</td>"
+              rownew += "<td>" + newvalues[i] + "</td>"
+            }
+            rowold += "</tr>";
+            rownew += "</tr>";
+
+            var elem = "<table class='table'>" +
+              header +
+              "<tbody>" +
+                rowold +
+                rownew +
+              "</tbody>" +
+            "</table>";
+
+            $("#thing").append("<li>" + elem + "</li>");
+
+            console.log(columns);
+
+            // $('#thing li:last-child').dynatable({dataset: {records: data[i]}});
             // data[i]
           }
         });

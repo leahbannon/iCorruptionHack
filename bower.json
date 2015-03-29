@@ -1,11 +1,13 @@
 {
   "name": "icorruptionhack",
   "version": "0.0.0",
+  "directory" : "./bower_components",
   "dependencies": {
     "bootstrap": "~3.0.0",
     "modernizr": "~2.6.2",
     "jquery": "~1.9.1",
-    "jquery-csv": "*"
+    "jquery-csv": "*",
+    "dynatable": "~0.3.1"
   },
   "devDependencies": {}
 }
