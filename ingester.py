@@ -4,12 +4,7 @@ Push new data to sqlite database.
 import dateutil.parser
 import datetime
 
-from peewee import *
-
-from models.Contribution import Contribution
-from models.File import File
-
-db = SqliteDatabase('contributions.db')
+from models import contributions
 
 def parse_fec_file(infile):
     f = open(infile)
@@ -75,27 +70,24 @@ def ingest(filepath):
     '''Ingest file into sqlite database'''
 
     print "Ingesting %s" % filepath
-    rows = parse_fec_file(filepath)
-    myfile = File.get_or_create(name=filepath)
-    myfile_id = myfile.id
+    items = parse_fec_file(filepath)
+    scraped_date = filepath.replace("data/FEC 2014 ", "").replace("/itcont.txt", "")
 
-    with db.transaction():
-        for idx in range(0, len(rows), 500):
-            print "Inserting row %d of %s" % (idx, filepath)
-            rows_subset = rows[idx:idx+500]
-            for row in rows_subset:
-                row['file'] = myfile_id
-            Contribution.insert_many(rows_subset).execute()
+    for item in items:
+        item['scraped_date'] = scraped_date
+        item['_id'] = item['scraped_date'] + "-" + str(item['sub_id'])
+
+    contributions.insert(items)
 
 if __name__ == '__main__':
+
     # ingest files
     filepaths = [
         "data/FEC 2014 2.17.2014/itcont.txt",
-        "data/FEC 2014 3.22.2015/itcont.txt",
         "data/FEC 2014 9.14.2014/itcont.txt"
+        "data/FEC 2014 3.22.2015/itcont.txt",
     ]
 
     for filepath in filepaths:
         if not ingested(filepath):
             ingest(filepath)
-   
