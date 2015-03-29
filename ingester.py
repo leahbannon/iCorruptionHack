@@ -73,6 +73,8 @@ def ingested(filepath):
 
 def ingest(filepath):
     '''Ingest file into sqlite database'''
+
+    print "Ingesting %s" % filepath
     rows = parse_fec_file(filepath)
     myfile = File.get_or_create(name=filepath)
     myfile_id = myfile.id
