@@ -17,7 +17,7 @@
   </head>
   <body>
 
-    <div class="container">
+    <div class="container" style="width:100%;">
       <ol id="thing">
       </ol>
     </div>
@@ -68,15 +68,13 @@
           for (i in data) {
 
             var columns = [];
-            var newvalues = [];
-            var oldvalues = [];
+            var values = [];
 
             for (j in data[0]) {
               var obj = data[i][j];
               var key = Object.keys(obj)[0];
               columns.push(key);
-              newvalues.push(obj[key].new);
-              oldvalues.push(obj[key].new);
+              values.push(obj[key]);
             }
 
             var header = "<thead><tr>";
@@ -87,9 +85,15 @@
 
             var rowold = "<tr>";
             var rownew = "<tr>";
-            for (i in oldvalues) {
-              rowold += "<td>" + oldvalues[i] + "</td>"
-              rownew += "<td>" + newvalues[i] + "</td>"
+            for (i in values) {
+              if (values[i].changed == true) {
+                rowold += "<td bgcolor='yellow'>" + values[i].old + "</td>"
+                rownew += "<td bgcolor='yellow'>" + values[i].new + "</td>"
+              }
+              else {
+                rowold += "<td>" + values[i].old + "</td>"
+                rownew += "<td>" + values[i].new + "</td>"
+              }
             }
             rowold += "</tr>";
             rownew += "</tr>";
