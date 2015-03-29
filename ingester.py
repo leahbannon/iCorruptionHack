@@ -61,16 +61,22 @@ def line_to_dict(row):
         "sub_id" : row[20]
     }
 
-def ingested(infile):
+def ingested(filepath):
     '''Return true if file is already ingested, false otherwise'''
-    pass
+    # TODO: implement better (just checks if file in table right now)
+    try:
+        myfile = File.get(name=filepath)
+        print "%s already in database." % filepath
+        return True
+    except:
+        return False
 
 def ingest(filepath):
     '''Ingest file into sqlite database'''
     rows = parse_fec_file(filepath)
     myfile = File.get_or_create(name=filepath)
     myfile_id = myfile.id
-    # Fastest.
+
     with db.transaction():
         for idx in range(0, len(rows), 500):
             print "Inserting row %d of %s" % (idx, filepath)
@@ -79,36 +85,15 @@ def ingest(filepath):
                 row['file'] = myfile_id
             Contribution.insert_many(rows_subset).execute()
 
-    # with db.transaction():
-    #     Contribution.insert_many(rows).execute()
-
 if __name__ == '__main__':
     # ingest files
-    filepath = "data/FEC 2014 2.17.2014/itcont.txt"
-    # items = ingest(filepath)
-    ingest(filepath)
-    # ['C00162578', 'N', 'M3', None, '13961173948', '15', 'IND', 'WILLIS-MILLER, TAUNJA', 'CHARLESTON', 'WV', '25304', 'JACKSON & KELLY', 'ATTORNEY', datetime.datetime(2013, 2, 22, 0, 0), 1000, None, '11AI-000021126', 861004, None, None, 4031820131185265954]
+    filepaths = [
+        "data/FEC 2014 2.17.2014/itcont.txt",
+        "data/FEC 2014 3.22.2015/itcont.txt",
+        "data/FEC 2014 9.14.2014/itcont.txt"
+    ]
 
-# ['C00162578'
-#  'N'
-#  'M3'
-#  None
-#  '13961173948'
-#  '15'
-#  'IND'
-#  'WILLIS-MILLER
-#  TAUNJA'
-#  'CHARLESTON'
-#  'WV'
-#  '25304'
-#  'JACKSON & KELLY'
-#  'ATTORNEY'
-#  datetime.datetime(2013, 2, 22, 0, 0)
-#  1000
-#  None
-#  '11AI-000021126'
-#  861004
-#  None
-#  None
-#  4031820131185265954]
-
+    for filepath in filepaths:
+        if not ingested(filepath):
+            ingest(filepath)
+   
