@@ -9,8 +9,9 @@ import csv
 # ]
 
 # finding deleted
+print "grouping by id..."
 grouped_by_sub_id = contributions.aggregate([{"$group": {"_id": "$sub_id", "dates": { "$push" : "$scraped_date"}}}], allowDiskUse=True, useCursor=True, batchSize=10)
-
+print "writing to csv..."
 with open("contributions.csv", "w") as f:
 	writer = csv.writer(f)
 
@@ -30,6 +31,5 @@ with open("contributions.csv", "w") as f:
 				mar_2015 = date
 
 		row = [sub_id, feb_2014, sept_2014, mar_2015]
-		print row
 		writer.writerow(row)
 
