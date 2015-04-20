@@ -19,7 +19,7 @@ def parse_fec_file(infile):
 
 def parse_line(l):
     vals = l.split('|')
-    vals = map(lambda x:None if x=='' else x,vals)
+    vals = map(lambda x: None if x=='' else x,vals)
     int_cols = [18-1,21-1] #file num and sub id
     for i in int_cols:
         if vals[i] is not None:
@@ -71,23 +71,35 @@ def ingested(filepath):
         return False
 
 def ingest(filepath):
-    '''Ingest file into sqlite database'''
+    '''Ingest file into database'''
 
     print "Ingesting %s" % filepath
-    rows = parse_fec_file(filepath)
+    rows_in_file = parse_fec_file(filepath)
     myfile = File.get_or_create(name=filepath)
     myfile_id = myfile.id
 
     with db.transaction():
-        for idx in range(0, len(rows), 500):
+        for idx in range(0, len(rows_in_file), 500):
             print "Inserting row %d of %s" % (idx, filepath)
-            rows_subset = rows[idx:idx+500]
+            
+            rows_subset = rows_in_file[idx:idx+500]
+            rows_to_insert = []
+
             for row in rows_subset:
-                row['file'] = myfile_id
+                # If the row isn't already there, insert it
+                if :
+                    pass
+                # If the row is there, check for modifications
+                elif:
+                    # If it has not been modified, simply add a ContributionHistory object
+                    if:
+                    # If it has been modified, create a new object and give the new object a contribution history
+                    else:
+                        pass
+
             Contribution.insert_many(rows_subset).execute()
 
 if __name__ == '__main__':
-    # ingest files
     filepaths = [
         "data/FEC 2014 2.17.2014/itcont.txt",
         "data/FEC 2014 3.22.2015/itcont.txt",

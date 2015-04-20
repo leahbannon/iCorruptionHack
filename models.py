@@ -42,8 +42,6 @@ class Contribution(BaseModel):
     memo_text = CharField(null=True, default=None)
     sub_id = IntegerField(null=True, default=None)
     
-    file_id = ForeignKeyField(File, related_name='contributions', null=True, default=None)
-
 class ContributionHistory(BaseModel)
     contribution_id = ForeignKeyField(Contribution,  null=True, default=None)
     file_id = ForeignKeyField(File, related_name='contributions', null=True, default=None)
