@@ -6,10 +6,9 @@ import datetime
 
 from peewee import *
 
-from models.Contribution import Contribution
-from models.File import File
+from models import File, Contribution
 
-db = SqliteDatabase('contributions.db')
+from app import db
 
 def parse_fec_file(infile):
     f = open(infile)

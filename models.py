@@ -1,12 +1,25 @@
 import re
 from blessings import Terminal
 from peewee import *
-from File import File
+from app import db
 
 t = Terminal()
-db = SqliteDatabase('contributions.db')
 
-class Contribution(Model):
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+class File(BaseModel):
+    id = PrimaryKeyField()
+    name = CharField(null=True, default=None)
+    year = IntegerField(null=True, default=None)
+    updated = DateTimeField(null=True, default=None)
+
+    def __str__(self):
+        return self.name
+
+class Contribution(BaseModel):
+    id = PrimaryKeyField()
     comittee_id = CharField(null=True, default=None)
     ammendment_id = CharField(null=True, default=None)
     report_type = CharField(null=True, default=None)
@@ -29,7 +42,5 @@ class Contribution(Model):
     memo_text = CharField(null=True, default=None)
     sub_id = IntegerField(null=True, default=None)
     
-    file = ForeignKeyField(File, null=True, default=None)
+    file_id = ForeignKeyField(File, related_name='contributions', null=True, default=None)
 
-    class Meta:
-        database = db
