@@ -1,6 +1,7 @@
 # Custom stuff
 /data
 *.db
+keys.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
