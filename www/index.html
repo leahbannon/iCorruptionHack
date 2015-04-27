@@ -4,29 +4,57 @@
 <head>
     <title>campainCON | Start</title>
 
-    <link href='./css/style.css' type='text/css' rel='stylesheet'>
+    <link href='style.css' type='text/css' rel='stylesheet'>
 </head>
 
 <body>
 
-<div id="title">
-	<div><a rel="title" href="http://campaigncon.org"><img alt="campaingCON" style="border-width:0" src="img/campaignCon-title.png" /></a></div>
-</div>
-
 <div id="container">
-	<h1>About</h1>
-	<p>campaigCON is the product of a two day <a href="https://hack-icorruption.hackpad.com/Hacking-iCorruption-March-2729-2015-5Hy9RwotYNM">hackathon to end iCorruption (Institutional Corruption)</a>.
-		This project focused on the relationship between campaign contributions and congressional candidates using <a href="http://www.fec.gov/finance/disclosure/ftpdet.shtml">FEC data</a> to explore both the short term and long term trends of money in politics. You can learn more about the implications of changes to FEC records <a href="http://www.alternet.org/story/156329/revealed%3A_key_files_on_big-ticket_political_donations_vanish_at_federal_election_commission">in this story</a> that was co-authored by the Harvard Edmond J. Safra Center for Ethics fellow that inspired this project, Paul Jorgensen.</p>
-    <p>The site is currently under futher development. Please check back for updates and more features for exploring this crucial information.</p>
 
-</div>
-<div id="container">
-	 <h1>Modified FEC Record Example</h1>
+<header>
+	<a rel="title" href="http://campaigncon.org"><img alt="campaingCON" style="border-width:0" src="campaignCon-title.png" /></a>
+</header>
+
+<section class="intro">
+	<h1>About this project:</h1>
+	<h3>campaigCON is the product of a two day <a href="https://hack-icorruption.hackpad.com/Hacking-iCorruption-March-2729-2015-5Hy9RwotYNM">hackathon to end iCorruption (Institutional Corruption)</a>.</h3>
+    <p>This project focused on the relationship between campaign contributions and congressional candidates using <a href="http://www.fec.gov/finance/disclosure/ftpdet.shtml">FEC data</a> to explore both the short term and long term trends of money in politics. The site is currently under futher development. Please check back for updates and more features for exploring this crucial information.
+	</p>
+
+</section>
+
+<section>
+    <div class="content">
+	<h1>Modified FEC Record Example:</h1>
     <p><a href="http://dmil.github.io/iCorruptionHack/">2014 Revised Record</a></p>
-    <h1>Network of Influence Examples</h1>
+    <h1>Network of Influence Examples:</h1>
     <p><a href="1990.html">1990 Network of contributors giving $25,000 or more to winning candidates and their recipients.</a></p>
     <p><a href="2014.html">2014 Network of contributors giving $25,000 or more to winning candidates and their recipients.</a></p>
     <p><a href="networkOfCorruption.html">Interactive network of contributors giving $25,000 or more to winning candidates and their recipients from 1990-2014.</a></p>
 </div>
+
+<form>
+    <h3>Sign up to receive updates!</h3>
+<div class="standardinput">
+  <label for="name">Name</label><br>
+  <input type="text" id="username" placeholder=" Enter your name here" required />
+</div> 
+<!-- Name field -->
+
+<div class="standardinput" id="email">
+  <label for="email">Email</label><br>
+  <input type="text" id="email" placeholder=" Enter your email address" required />
+</div> 
+<!-- email field -->
+
+<div id="button">
+    <input type="submit" />
+</div>
+<h5>We abhor spam, we'll only email you when something good is going on. Promise.</h5>
+
+</form>
+
+</section>
+</container>
 </body>
 </html>
