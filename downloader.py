@@ -8,11 +8,36 @@ indiv16.zip
 oth16.zip
 """
 
+from app import root
+import subprocess
+
 def get_file():
     '''
     Get file from URL
     '''
-    pass
+
+    urls = ['ftp://ftp.fec.gov/FEC/2016/indiv16.zip']
+
+    v = subprocess.call(['sh', root+'/download.sh'])
+    
+    print v
+
+
+
+'''
+
+   for url in urls:
+        
+        # Download and unzip 
+        f = urlopen(url)
+        with open(f, 
+        exec('unzip f')
+        
+        # if already_downloaded(f):
+        #        pass
+            
+'''     
+
 
 def already_downloaded(file):
     '''
@@ -34,3 +59,6 @@ def download():
         print "Didn't save"
     else:
         save(my_file)
+
+
+get_file()

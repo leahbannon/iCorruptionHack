@@ -1,0 +1,1 @@
+unzip 'ftp://ftp.fec.gov/FEC/2016/indiv16.zip'
