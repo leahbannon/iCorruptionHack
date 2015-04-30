@@ -41,7 +41,11 @@ class Contribution(BaseModel):
     memo_cd = CharField(null=True, default=None)
     memo_text = CharField(null=True, default=None)
     sub_id = IntegerField(null=True, default=None)
-    
-class ContributionHistory(BaseModel)
+
+class ContributionChange(Contribution):
+    contribution_id = ForeignKeyField(Contribution,  null=False, default=None)
+
+# Join table between contribution and file for many to mayn relationship
+class ContributionFile(BaseModel):
     contribution_id = ForeignKeyField(Contribution,  null=True, default=None)
     file_id = ForeignKeyField(File, related_name='contributions', null=True, default=None)

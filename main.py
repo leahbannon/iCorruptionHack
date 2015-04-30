@@ -5,6 +5,7 @@ from peewee import *
 
 from app import app, db
 from models import File, Contribution
+from ingester import ingest
 
 def createtables_db():
     # Connect to our database.
@@ -20,8 +21,8 @@ def clear_db():
     print "Cleared database"
 
 def seed_db():
-    # ingest
-    pass
+    with open("data/FEC 2014 9.14.2014/itcont.txt") as initialfile:
+        ingest(initialfile)
 
 def reset_database():
     # Drop all tables in postgres database

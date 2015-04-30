@@ -11,11 +11,9 @@ from models import File, Contribution
 from app import db
 
 def parse_fec_file(infile):
-    f = open(infile)
-    res = []
-    for line in f:
-        res.append(parse_line(line))
-    return [line_to_dict(val) for val in res]
+    with open(infile) as f:
+        res = [parse_line(line) for line in f]
+        return [line_to_dict(val) for val in res]
 
 def parse_line(l):
     vals = l.split('|')
@@ -35,7 +33,7 @@ def parse_line(l):
             vals[i] = datetime.datetime(month=int(vl[0:2]), day=int(vl[2:4]), year=int(vl[4:8]))
     return vals
 
-def line_to_dict(row):
+def row_to_dict(row):
     return {
         "comittee_id" : row[0],
         "ammendment_id" : row[1],
@@ -78,14 +76,17 @@ def ingest(filepath):
     myfile = File.get_or_create(name=filepath)
     myfile_id = myfile.id
 
-    with db.transaction():
+    with db.transaction(): # TODO: More sane error handling
         for idx in range(0, len(rows_in_file), 500):
+
+            # Ingest 500 rows at a time
             print "Inserting row %d of %s" % (idx, filepath)
-            
             rows_subset = rows_in_file[idx:idx+500]
             rows_to_insert = []
 
             for row in rows_subset:
+                unsaved_new_contribution = Contribution(**row_to_dict(row))
+                import pdb; pdb.set_trace()
                 # If the row isn't already there, insert it
                 if :
                     pass
