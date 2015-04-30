@@ -22,23 +22,6 @@ def get_file():
     
     print v
 
-
-
-'''
-
-   for url in urls:
-        
-        # Download and unzip 
-        f = urlopen(url)
-        with open(f, 
-        exec('unzip f')
-        
-        # if already_downloaded(f):
-        #        pass
-            
-'''     
-
-
 def already_downloaded(file):
     '''
     Return true if we already have this version of the file
