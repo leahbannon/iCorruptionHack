@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <title>campaignCON | Network of Corruption</title>
+    <script type="text/javascript" src="./js/vis.js"></script>
+    <link type="text/css" rel="stylesheet" href="./css/vis.css">
+
+    <style type="text/css">
+        body, html: {
+            font-family: verdana;
+        }
+        #mynetwork {
+            width: 1280px;
+            height: 720px;
+            border: 1px solid lightgray;
+        }
+
+        #visualization {
+            width: 1280px;
+            height: 200px;
+            padding: 10px;
+        }
+
+        div.nodeContent {
+            position: relative;
+            border: 1px solid lightgray;
+            width:360px;
+            height:720px;
+            margin-top: -722px;
+            margin-left: 1290px;
+            padding:5px;
+        }
+
+        pre {padding: 2px; margin: 2px; }
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: red; }
+
+        #yearDisplay {
+            text-align: center;
+            font-family: verdana;
+            font-size: 400%;
+            
+        }
+
+        #displayGroup{
+            position: relative;
+        }
+
+        div {font-family: verdana;}
+
+        h4{font-family: verdana;}
+
+        p{font-family: verdana;}
+    </style>
+</head>
+
+<body>
+<span id="displayGroup">
+    <span id="yearDisplay"><output for=election-cycle id="election-cycle-val" oninput="yearUpdate(value)">1990</output></span>
+    <span id="election-cycle-min">1990</span> <input id="election-cycle" type="range" min="1990" max="2014" value="1990" step="2" oninput="yearUpdate(value)"> <span id="election-cycle-max">2014</span>
+    <a href="http://campaigncon.org"><img alt="campaingCON" style="border-width:0" src="img/campaignCon-logo-small.png" align="right"/></a>
+</span>
+<div id="visualization"></div>
+<div><input type="checkbox" id="allowedToMove">: Allow movement.</input></div>
+<div id="mynetwork"></div>
+<div class="nodeContent"><h4>Node Content:</h4> <pre id="nodeContent"></pre></div>
+
+
+
+
+<script type="text/javascript">
+var network;
+
+var nodes = new vis.DataSet();
+var edges = new vis.DataSet();
+var gephiImported;
+var allowedToMoveCheckbox = document.getElementById("allowedToMove");
+allowedToMoveCheckbox.onchange = redrawAll;
+var lastYear = 1990;
+var nodeContent = document.getElementById("nodeContent");
+
+window.onload = function(){
+    loadJSON("./data/1990.json",redrawAll);
+    allowedToMoveCheckbox.checked = true;
+}
+var index = 1;
+function yearUpdate(e) {
+
+    var fName = "./data/" + e + ".json"
+
+    loadJSON(fName,redrawAll);
+    var dif = (e-lastYear)/2;
+    redrawChart(dif);
+    lastYear=e;
+
+    document.getElementById("election-cycle-val").value = e;
+
+    if(e > 2002){
+        allowedToMoveCheckbox.checked = false;
+    }
+    else allowedToMoveCheckbox.checked = true;
+}
+
+var container = document.getElementById('mynetwork');
+var data = {
+    nodes: nodes,
+    edges: edges
+};
+var options = {
+    nodes: {
+        shape: 'dot',
+        fontFace: "Verdana",
+        fontSize: 56
+    },
+    edges: {
+        width: 3,
+        inheritColor: "from"
+    },
+    tooltip: {
+        delay: 20,
+        fontSize: 12,
+        color: {
+            background: "#fff"
+        }
+    },
+    smoothCurves: {dynamic:false, type: "continuous"},
+    stabilize: false,
+    physics: {barnesHut: {gravitationalConstant: -20000, springConstant: 0.002, springLength: 600, centralGravity: 0}},
+    hideEdgesOnDrag: true
+};
+
+network = new vis.Network(container, data, options);
+
+/**
+ * This function fills the DataSets. These DataSets will update the network.
+ */
+function redrawAll(gephiJSON) {
+    if (gephiJSON.nodes === undefined) {
+        gephiJSON = gephiImported;
+    }
+    else {
+        gephiImported = gephiJSON;
+    }
+
+    nodes.clear();
+    edges.clear();
+
+    var allowedToMove = allowedToMoveCheckbox.checked;
+    var parsed = vis.network.gephiParser.parseGephi(gephiJSON, {allowedToMove:allowedToMove});
+
+    // add the parsed data to the DataSets.
+    nodes.add(parsed.nodes);
+    edges.add(parsed.edges);
+
+    //var data = nodes.get("C00193342"); // get the data from node 1
+    //nodeContent.innerHTML = syntaxHighlight(data); // show the data in the div
+    network.zoomExtent(); // zoom to fit
+}
+
+// add event listener
+network.on('select', function(id) {
+    var nodeData = nodes.get(id.nodes);
+    var edgeData = edges.get(id.edges);
+    nodeContent.innerHTML = "Node Data: " + syntaxHighlight(nodeData) + "\n Edge Data: " + syntaxHighlight(edgeData); // show the data in the div
+});
+
+// from http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+        json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
+
+function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                success(JSON.parse(xhr.responseText));
+            }
+            else {
+                error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}
+
+var container = document.getElementById('visualization');
+var allItems = [
+{x: '1990', y: 0.028},
+{x: '1992', y: 0.151},
+{x: '1994', y: 0.254},
+{x: '1996', y: 0.525},
+{x: '1998', y: 0.490},
+{x: '2000', y: 1.135},
+{x: '2002', y: 1.183},
+{x: '2004', y: 4.594},
+{x: '2006', y: 13.801},
+{x: '2008', y: 15.935},
+{x: '2010', y: 12.484},
+{x: '2012', y: 25.601},
+{x: '2014', y: 26.430}
+];
+var items = allItems.slice(0,index);
+
+var dataset = new vis.DataSet(items);
+var options = {
+dataAxis: {
+    title: {
+        left: {
+            text: 'Dollars in Millions'
+        }
+    },
+    customRange: {
+        left:{
+            min: 0.0
+        }
+    }
+},
+shaded: true,
+height: '200px',
+width: '1280px',
+start: '1990',
+end: '2014'
+};
+var graph2d = new vis.Graph2d(container, dataset, options);
+
+function redrawChart(index){
+    while(index != 0){
+        if(index > 0){
+            var size = dataset.length;
+            var newItems = allItems.slice(size,size+index);
+            dataset.add(newItems);
+            index = 0;
+        }
+        else{
+            var rIndex = dataset.length - 1;
+            var items = dataset.get();
+            dataset.remove(items[rIndex].id);
+            index = index+1;
+        }
+    }
+}
+
+</script>
+
+
+
+</body></html>
